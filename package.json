@@ -1,0 +1,6 @@
+{
+  "name": "coffee-mission",
+  "dependencies": {
+    "micro": "^9.3.4"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "name": "coffee-mission",
+  "builds": [
+    { "src": "api/*.js", "use": "@now/node" },
+    { "src": "*.html", "use": "@now/static" },
+    { "src": "*.js", "use": "@now/static" },
+    { "src": "static/**/*.**", "use": "@now/static" },
+    { "src": "*.css", "use": "@now/static" }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/", "dest": "index.html" }
+  ]
+}

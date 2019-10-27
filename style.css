@@ -1,0 +1,154 @@
+body {
+    /* transform: scale(.75); */
+    transform-origin: 0 0;
+ }
+#img {overflow: hidden}
+.img-insp {
+  height: 100vh;
+  min-width: 100%;
+  transform: scale(1.5);
+}
+.time-container { background: white; bottom: 0; max-height: 200px}
+#time {font-weight: bolder; font-size: 90px;}
+#timer-progress {min-height: 15px; background: #00BCD4; width: 0%;
+  /* transition: width .5s ease-in */
+}
+
+ul {margin: 0}
+li { margin-bottom: 6px;
+  height: 37px}
+
+/* ul li:nth-child(odd) {background:#ddd1be } */
+li.stop {margin: 16px}
+
+li.bb:after { content: "";
+    display: block;
+    margin: 0 auto;
+    width: 100%;
+    padding-top: 6px;
+    border-bottom: 1px solid #ddd1be;
+  }
+
+.hide {display: none}
+.column {max-width: 500px; border-right: 1px solid #ddd1be}
+.agency-container { padding-top: 0px;}
+.transport-type-muni-logo { width: 17%; margin-left: -1%;}
+.transport-type-bart-logo { width: 14%;}
+.transport-type-icon { width: 10%; margin-right: 20px}
+.transport-type-container { height: 60px;     border-bottom: 1px solid #ddd2be;
+    padding-bottom: 0px;
+    margin-bottom: 0;}
+.line-name { text-transform: capitalize }
+
+/* .line-name::first-letter {text-transform: capitalize;} */
+.line-number { height: 30px; width: 30px; border-radius: 50px; margin-right: 8px}
+.line-number-text {
+  color: white;
+  padding: 6px 6px;
+  font-weight: bolder;
+  /* font-size: 22px; */
+  letter-spacing: 0px;
+ }
+.line-number-label-12, .line-number-label-48 { background: rgb(19,129,192)}
+.line-number-label-14R { background: rgb(194,17,80); width: 40px}
+.line-number-label-67 { background: rgb(89,155,188)}
+.line-number-label-14, .line-number-label-49 { background: rgb(10,87,147)}
+
+.line-number-label-Blue-Wkd\/Sat {
+   background: rgb(30,173,238)
+}
+
+.line-number-label-Red {
+   background: rgb(238,31,43)
+}
+.line-number-label-Green {
+   background: rgb(23,164,80)
+}
+.line-number-label-Yellow {
+   background: rgb(253,240,53)
+}
+.line-number-label-Orange {
+   background: rgb(241,139,46)
+}
+.arrival-time { margin-right: 7px }
+.arrival-time:not(:last-child) .arrival-time-text::after { content: ','}
+/* .line-name::first-letter {text-transform: capitalize;} */
+
+.info {
+  transform: rotate(-90deg);
+  bottom: 75px;
+}
+.loading {
+  -webkit-animation: fade;
+  -webkit-animation-duration: 2s;
+  -webkit-animation-iteration-count: 1;
+}
+
+@-webkit-keyframes fade {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 0; }
+}
+
+.vimeo-wrapper {
+   position: absolute;
+   top: -50px;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   z-index: -1;
+   pointer-events: none;
+   overflow: hidden;
+}
+.vimeo-wrapper iframe {
+   width: 100vw;
+   height: 56.25vw; /* Given a 16:9 aspect ratio, 9/16*100 = 56.25 */
+   min-height: 100vh;
+   min-width: 177.77vh; /* Given a 16:9 aspect ratio, 16/9*100 = 177.77 */
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+}
+
+a {
+  border-bottom: 1px solid #b3b3b3;
+  padding-bottom: 2px;
+    display: inline-block;
+    position: relative;
+    color: inherit;
+    text-decoration: none
+
+}
+h1 {
+  font-size: 21px
+}
+
+h2 {
+  font-size: 16px
+}
+
+h3 {
+  font-size: 12px
+
+}
+
+@font-face {
+    font-family: 'tenso';
+    src: url('./static/font/03_Tenso_Regular-webfont.woff2') format('woff2'),
+         url('./static/font/03_Tenso_Regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  height: 100vh;
+  margin: 0;
+  font-family: tenso;
+  background: #FAF2E5
+}
