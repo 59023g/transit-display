@@ -1,30 +1,12 @@
+
+
+
+
+import {stops} from './stops.js'
+
 const dev = true
 
-// const apiKey511 = '11ae2c20-9586-4723-816a-33d342c0ce42' LIVE
 
-const apiKey511 = 'a6fa9b93-36f7-4a45-9e4c-d35d6a841e82'
-  // http://webservices.nextbus.com/service/publicJSONFeed?command=predictions&a=sf-muni&stopId=13476
-
-// https://gist.github.com/grantland/7cf4097dd9cdf0dfed14
-
-const stops = [{
-    id: '13476',
-    agency: 'sf-muni'
-  }, // https://sfbaytransit.org/24th-st-mission-st-west // 12, 48, 67
-  {
-    id: '13477',
-    agency: 'sf-muni'
-  }, // https://sfbaytransit.org/24th-st-mission-st-east // 12, 48
-  {
-    id: '15566',
-    agency: 'sf-muni'
-  }, // https://sfbaytransit.org/mission-st-24th-st-south // 14, 14R, 49, 714
-  {
-    id: '15565',
-    agency: 'sf-muni'
-  } // https://sfbaytransit.org/mission-st-24th-st-north // 14, 14R, 49, 714
-  // { id: '24TH',  agency: 'BA' }   // 24thBart // 98?, 97?
-]
 
 let now
 let init = false
