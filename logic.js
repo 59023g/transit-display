@@ -1,18 +1,16 @@
 import { stops } from './stops.js'
+const dev = false
 
-const dev = true
 let init = false
 
 // related to live update
 let isReloadPath = '//localhost:3000/api/isReload.js'
 let reloadCount = 0
-let reloadTimeout = 10
+let reloadTimeout = 3600
 
 // init
 window.onload = async () => {
   setInterval(timerEvents, 1000)
-  console.log('reload success')
-  // await getAndRenderPhoto()
 }
 
 const getReloadReload = async () => {
@@ -161,23 +159,23 @@ const renderBartDataDom = (parsedBartDataJson) => {
       </li>
     <ul>
     <li class="stop">
-      <h2>${parsedBartDataJson.name}</h2>
+      <h2 class="fwi">${parsedBartDataJson.name}</h2>
     </li>
   `
 
   for (const platform in platforms) {
-    html += `<li class="bb platform"><div class="df ph16 fwb" style="">Platform ${platform}</div></li>`
+    html += `<li class="bb platform df aic"><div class="df ph16" style="">Platform ${platform}</div></li>`
 
     for (const train of platforms[platform]) {
       html +=
-        `<li class="bb">
-          <div class="df fdr jcsb ph16 aic">
+        `<li class="bb df fdr aic">
+          <div class="df fdr jcsb ph16 w100">
             <div class="df fdr">
               <div id='line-label' class="line-number line-number-label"
                 style="background:${train.color}">
               </div>
               <div class="df fdc">
-                <h2 class="fwi">${train.destination}</h2>
+                <h2 class="fwb">${train.destination}</h2>
                 <h3 class="fwi" id='dir'>${train.dir}</h3>
               </div>
             </div>
@@ -338,24 +336,16 @@ const renderStopsAndVisits = (html, stops, divMount) => {
   // console.log('stops', stops)
   for (const stop in stops) {
     html += `<ul>
-    <li class="stop">
-      <h2>${stop}</h2>
-    </li>
-  `
+      ${getStop(stop)}
+    `
 
     for (const line in stops[stop]) {
       const lineVisits = stops[stop][line]
-      // console.log('line', line)
-
       for (const dir in lineVisits) {
-        // console.log('dir', dir, lineVisits[dir])
-
         const destinationName = 'destinanem'
-        // lineVisits[dir][0].MonitoredVehicleJourney.DestinationName
-
         html +=
-          `<li class="bb ${dir === 'null' ? 'hide' : 'show'}">
-                <div class="df fdr jcsb ph16">
+          `<li class="bb df fdr aic ${dir === 'null' ? 'hide' : 'show'}">
+                <div class="df fdr jcsb ph16 w100">
                   <div class="df fdr aic">
                     <div class="line-number line-number-label-${line}">
               `
@@ -410,6 +400,18 @@ const renderStopsAndVisits = (html, stops, divMount) => {
 
 }
 
+const getStop =  (stop) => {
+  if (stop === '24th St & Mission St') {
+    return `<li class="stop" style="margin-top:7px">
+              <h2 class="fwi pr">${stop} <span>&DoubleLongLeftRightArrow;</span></h2>
+            </li>
+          `
+  } else {
+    return `<li class="stop">
+              <h2 class="fwi pr">${stop} <span style='position: absolute;font-size: 24px;bottom: -5px;margin-left: 5px;'>&DoubleUpDownArrow;</span></h2>
+            </li>`
+  }
+}
 const getAndRenderPhoto = async () => {
   // https://api.unsplash.com/
 
