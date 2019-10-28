@@ -9,7 +9,7 @@
     { "src": "*.css", "use": "@now/static" }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/$1" },
-    { "src": "/", "dest": "index.html" }
+    { "src": "/api/(.*)", "dest": "/$1", "headers": { "cache-control": "max-age=60,immutable"} },
+    { "src": "/", "dest": "index.html", "headers": { "cache-control": "max-age=60,immutable"} }
   ]
 }
