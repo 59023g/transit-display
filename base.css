@@ -47,5 +47,7 @@ ul {list-style: none; padding: 0}
 .mh16 {margin: 0 16px}
 .m16 {margin: 16px}
 .oh {overflow: hidden}
+.hide {display: none}
 .fwi {font-weight: initial}
+.fwb {font-weight: bolder}
 h1, h2, h3, h4, h5 { margin: 0}

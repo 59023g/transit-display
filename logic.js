@@ -1,74 +1,90 @@
-
-
-
-
-import {stops} from './stops.js'
+import { stops } from './stops.js'
 
 const dev = true
-
-
-
-let now
 let init = false
 
+// related to live update
+let isReloadPath = '//localhost:3000/api/isReload.js'
+let reloadCount = 0
+let reloadTimeout = 10
+
 // init
-window.onload = async() => {
+window.onload = async () => {
   setInterval(timerEvents, 1000)
-    // await getAndRenderPhoto()
-
-
+  console.log('reload success')
+  // await getAndRenderPhoto()
 }
 
-const timerEvents = async() => {
-  setDomTime()
+const getReloadReload = async () => {
+  const rawResponse = await fetch(isReloadPath)
+  let reload = await rawResponse.text()
+  let reloadParsed = JSON.parse(reload)
+  if (reloadParsed.reload) {
+    location.reload(true);
+  }
+}
 
-  // side effect here w/now
+
+const timerEvents = async () => {
+  let now = new Date()
+  // sets clock
+  setDomClock(now)
+  // get second so certain events fire
   let count = now.getSeconds()
+  reloadCount++
 
-  if (count === 0 || !init) {
+  if (reloadCount === reloadTimeout) {
+    await getReloadReload()
+    reloadCount = 0
+  }
+  // if dev, just get once
+  if (dev) {
+    if (init) return
+    await getRenderBartData(count)
+    await getRenderMuniData(count)
+    init = true
+    return
+  }
+
+  if (
+    !init ||
+    count === 15 ||
+    count === 30 ||
+    count === 45) {
     await getRenderBartData(count)
     await getRenderMuniData(count)
     init = true
   }
-
-  if (count === 15 || count === 30 || count === 45) {
-    // await getRenderBartData(count)
-    // await getRenderBartData(count)
-
-  }
 }
 
-const getRenderBartData = async(count) => {
+const getRenderBartData = async (count) => {
   console.log(`Fetching BART: ${count}`)
   $("#bart-loading").html("<div>Request</div>")
-  const rawBartDataJson = async() => {
-    if (dev) {
-      return JSON.parse(window.bartData)
-    }
+
+  const rawBartDataJson = async () => {
+    if (dev) { return JSON.parse(window.bartData) }
     return await getBartData()
   }
 
   const parsedBartDataJson = parseBartData(await rawBartDataJson())
-  console.log('BART: ', parsedBartDataJson)
+  // console.log('BART: ', parsedBartDataJson)
   renderBartDataDom(parsedBartDataJson)
   $("#bart-loading").html("")
 
 }
 
-const getRenderMuniData = async(count) => {
+const getRenderMuniData = async (count) => {
   console.log(`Fetching MUNI ${count}`)
   $("#muni-loading").html("<div>Request</div>")
 
   try {
-    const rawDataString = async() => {
-      // if (dev) {
-      //   return window.data
-      // }
+    const rawDataString = async () => {
+      if (dev) { return window.data }
       return await getStopDataNextbus()
     }
 
     const sortedByAgencyAndStopsObj = parseData(await rawDataString())
-      // console.log('MUNI: ', sortedByAgencyAndStopsObj)
+    // console.log('MUNI: ', sortedByAgencyAndStopsObj)
 
     renderDataToDom(sortedByAgencyAndStopsObj)
     $("#muni-loading").html("")
@@ -82,7 +98,7 @@ const getRenderMuniData = async(count) => {
 }
 
 // http://api.bart.gov/docs/overview/examples.aspx
-const getBartData = async() => {
+const getBartData = async () => {
   const rawResponse = await fetch(`//api.bart.gov/api/etd.aspx?cmd=etd&orig=24th&key=MW9S-E7SL-26DU-VV8V&json=y`)
   return await rawResponse.json()
 }
@@ -102,7 +118,7 @@ const parseBartData = (rawBartDataJson) => {
         station.platforms[estimate.platform] = []
       }
 
-      var el = station.platforms[estimate.platform].filter(function(el) {
+      var el = station.platforms[estimate.platform].filter(function (el) {
         return el.destination === line.destination;
       });
 
@@ -116,7 +132,7 @@ const parseBartData = (rawBartDataJson) => {
         })
       }
 
-      station.platforms[estimate.platform].sort(function(a, b) {
+      station.platforms[estimate.platform].sort(function (a, b) {
         if (a.sort === "Leaving") {
           a.sort = "0"
         }
@@ -150,19 +166,19 @@ const renderBartDataDom = (parsedBartDataJson) => {
   `
 
   for (const platform in platforms) {
-    html += `<li class="bb"><div class="df">Platform ${platform}</div></li>`
+    html += `<li class="bb platform"><div class="df ph16 fwb" style="">Platform ${platform}</div></li>`
 
     for (const train of platforms[platform]) {
       html +=
         `<li class="bb">
-          <div class="df fdr jcsb ph16">
+          <div class="df fdr jcsb ph16 aic">
             <div class="df fdr">
               <div id='line-label' class="line-number line-number-label"
                 style="background:${train.color}">
               </div>
               <div class="df fdc">
-                <h2 class="">${train.destination}</h2>
-                <h2 class="fwi" id='dir'>${train.dir}</h2>
+                <h2 class="fwi">${train.destination}</h2>
+                <h3 class="fwi" id='dir'>${train.dir}</h3>
               </div>
             </div>
             <div class="df fdr">
@@ -172,7 +188,7 @@ const renderBartDataDom = (parsedBartDataJson) => {
         html +=
           `
           <div class="arrival-time">
-            <h2 class="arrival-time-text">${estimate.minutes}</h2>
+            <h1 class="arrival-time-text">${estimate.minutes}</h1>
           </div>`
 
       }
@@ -187,15 +203,10 @@ const renderBartDataDom = (parsedBartDataJson) => {
 }
 
 
-// update now, every second
 // also updates timer, and clock
-const setDomTime = () => {
+const setDomClock = (now) => {
   // get time in correct format
   const getTime = () => {
-    now = new Date()
-    if (dev) {
-      now = new Date('2019-09-28T19:13:38Z')
-    }
     return now.toLocaleDateString([], {
       month: '2-digit',
       hour: '2-digit',
@@ -203,17 +214,15 @@ const setDomTime = () => {
       hour12: true
     }).slice(4, 9)
   }
-
   // update time in dom
   $("#time").text(getTime())
-
   // set bar width
   const width = now.getSeconds() * 100 / 60 + 1.66667
   $("#timer-progress").css('width', width + '%')
 }
 
 // make request to get data
-const getStopDataNextbus = async() => {
+const getStopDataNextbus = async () => {
   let jsonResponseArr = []
   for await (let stop of stops) {
     const rawResponse = await fetch(
@@ -228,7 +237,7 @@ const getStopDataNextbus = async() => {
 
 // parse a dreadful API response so I can use in DOM
 const parseData = (rawDataString) => {
-  console.log('raw', JSON.parse(rawDataString))
+  // console.log('raw', JSON.parse(rawDataString))
   const dataObjectArr = JSON.parse(rawDataString)
   const sortedByAgencyAndStopsObj = {}
 
@@ -293,7 +302,7 @@ const renderDataToDom = (sortedByAgencyAndStopsObj) => {
   // console.log('x', sortedByAgencyAndStopsObj)
   if (sortedByAgencyAndStopsObj["San Francisco Muni"]) {
     const stops = reverseObject(sortedByAgencyAndStopsObj["San Francisco Muni"])
-      // header
+    // header
     let html =
       `
       <div class="agency-container df fdc">
@@ -311,7 +320,7 @@ const renderDataToDom = (sortedByAgencyAndStopsObj) => {
 
   if (sortedByAgencyAndStopsObj.BA) {
     const stops = reverseObject(sortedByAgencyAndStopsObj.BA)
-      // header
+    // header
     let html =
       `
       <div class="agency-container df fdc">
@@ -320,8 +329,8 @@ const renderDataToDom = (sortedByAgencyAndStopsObj) => {
           <img class="transport-type-bart-logo" src="static/bart_logo.svg"/>
         </li>
       `
-      // <img class="transport-type-icon" src="static/bus.svg"/>
-      // renderStopsAndVisits(html, stops, "#bart-data")
+    // <img class="transport-type-icon" src="static/bus.svg"/>
+    // renderStopsAndVisits(html, stops, "#bart-data")
   }
 }
 
@@ -336,13 +345,13 @@ const renderStopsAndVisits = (html, stops, divMount) => {
 
     for (const line in stops[stop]) {
       const lineVisits = stops[stop][line]
-        // console.log('line', line)
+      // console.log('line', line)
 
       for (const dir in lineVisits) {
         // console.log('dir', dir, lineVisits[dir])
 
         const destinationName = 'destinanem'
-          // lineVisits[dir][0].MonitoredVehicleJourney.DestinationName
+        // lineVisits[dir][0].MonitoredVehicleJourney.DestinationName
 
         html +=
           `<li class="bb ${dir === 'null' ? 'hide' : 'show'}">
@@ -366,7 +375,7 @@ const renderStopsAndVisits = (html, stops, divMount) => {
           // console.log('vli', visits.length)
 
           for (let i = 0; i < visits.length; i++) {
-            console.log('ss', visits[i])
+            // console.log('ss', visits[i])
             const visit = visits[i]
             if (i < 2) {
               if (visit.minutes === "0") {
@@ -401,7 +410,7 @@ const renderStopsAndVisits = (html, stops, divMount) => {
 
 }
 
-const getAndRenderPhoto = async() => {
+const getAndRenderPhoto = async () => {
   // https://api.unsplash.com/
 
   const rawResponse = await fetch(
@@ -409,8 +418,8 @@ const getAndRenderPhoto = async() => {
   )
 
   const jsonResponse = await rawResponse.json()
-    // console.log(jsonResponse)
-    // https://api.unsplash.com/search/photos?page=1&query=office
+  // console.log(jsonResponse)
+  // https://api.unsplash.com/search/photos?page=1&query=office
 }
 
 const calculateFutureArrival = (now, arrivalTime) => {
@@ -419,8 +428,8 @@ const calculateFutureArrival = (now, arrivalTime) => {
 
   console.log(parsedNow, parsedArrivalTime)
   const timeToArrivalInMinutes = (parsedArrivalTime - parsedNow) / 60000
-    // console.log(parsedNow, parsedArrivalTime, parsedArrivalTime - parsedNow)
-    // console.log(now, arrivalTime, timeToArrivalInMinutes)
+  // console.log(parsedNow, parsedArrivalTime, parsedArrivalTime - parsedNow)
+  // console.log(now, arrivalTime, timeToArrivalInMinutes)
   return Math.floor(timeToArrivalInMinutes)
 }
 
