@@ -4,7 +4,7 @@ const dev = false
 let init = false
 
 // related to live update
-let isReloadPath = '//localhost:3000/api/isReload.js'
+let isReloadPath = '//transit-display-api.mpierce.now.sh/api/reload'
 let reloadCount = 0
 let reloadTimeout = 3600
 
@@ -30,6 +30,7 @@ const timerEvents = async () => {
   // get second so certain events fire
   let count = now.getSeconds()
   reloadCount++
+  console.log(reloadCount)
 
   if (reloadCount === reloadTimeout) {
     await getReloadReload()
@@ -46,6 +47,7 @@ const timerEvents = async () => {
 
   if (
     !init ||
+    count === 0 ||
     count === 15 ||
     count === 30 ||
     count === 45) {
@@ -221,15 +223,9 @@ const setDomClock = (now) => {
 
 // make request to get data
 const getStopDataNextbus = async () => {
-  let jsonResponseArr = []
-  for await (let stop of stops) {
-    const rawResponse = await fetch(
-      `//webservices.nextbus.com/service/publicJSONFeed?command=predictions&a=${stop.agency}&stopId=${stop.id}`
-    )
-    const jsonResponse = await rawResponse.json()
-    jsonResponseArr.push(jsonResponse.predictions)
-  }
-  return JSON.stringify(jsonResponseArr)
+  const rawResponse = await fetch('https://transit-display-api.mpierce.now.sh/api/muni')
+  const jsonResponse = await rawResponse.json()
+  return JSON.stringify(jsonResponse)
 }
 
 
@@ -422,17 +418,6 @@ const getAndRenderPhoto = async () => {
   const jsonResponse = await rawResponse.json()
   // console.log(jsonResponse)
   // https://api.unsplash.com/search/photos?page=1&query=office
-}
-
-const calculateFutureArrival = (now, arrivalTime) => {
-  const parsedNow = Date.parse(now)
-  const parsedArrivalTime = Date.parse(arrivalTime)
-
-  console.log(parsedNow, parsedArrivalTime)
-  const timeToArrivalInMinutes = (parsedArrivalTime - parsedNow) / 60000
-  // console.log(parsedNow, parsedArrivalTime, parsedArrivalTime - parsedNow)
-  // console.log(now, arrivalTime, timeToArrivalInMinutes)
-  return Math.floor(timeToArrivalInMinutes)
 }
 
 function reverseObject(object) {
