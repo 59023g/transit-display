@@ -1,6 +1,6 @@
 import { stops } from './stops.js'
 
-const dev = true
+const dev = false
 let init = false
 
 // related to live update
@@ -11,7 +11,6 @@ let reloadTimeout = 10
 // init
 window.onload = async () => {
   setInterval(timerEvents, 1000)
-  console.log('reload success')
   // await getAndRenderPhoto()
 }
 
