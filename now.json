@@ -3,9 +3,7 @@
   "name": "coffee-mission",
   "builds": [
     { "src": "*.html", "use": "@now/static" },
-    { "src": "*.js", "use": "@now/static" },
-    { "src": "static/**/*.**", "use": "@now/static" },
-    { "src": "*.css", "use": "@now/static" }
+    { "src": "src/**/*.**", "use": "@now/static" }
   ],
   "routes": [
     { "src": "/", "dest": "index.html", "headers": { "cache-control": "max-age=60,immutable"} }

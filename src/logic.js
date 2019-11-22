@@ -1,7 +1,5 @@
 import { stops } from './stops.js'
 const dev = false
-
-const dev = false
 let init = false
 
 // related to live update
@@ -12,7 +10,6 @@ let reloadTimeout = 3600
 // init
 window.onload = async () => {
   setInterval(timerEvents, 1000)
-  // await getAndRenderPhoto()
 }
 
 const getReloadReload = async () => {
@@ -32,7 +29,6 @@ const timerEvents = async () => {
   // get second so certain events fire
   let count = now.getSeconds()
   reloadCount++
-  console.log(reloadCount)
 
   if (reloadCount === reloadTimeout) {
     await getReloadReload()
@@ -46,7 +42,7 @@ const timerEvents = async () => {
     init = true
     return
   }
-
+  // get and update dom every 15 seconds and on init
   if (
     !init ||
     count === 0 ||
@@ -157,8 +153,8 @@ const renderBartDataDom = (parsedBartDataJson) => {
     <div class="agency-container df fdc">
       <li class="df fdr transport-type-container">
         <div class="m16">
-        <img class="transport-type-icon" src="static/train.svg"/>
-        <img class="transport-type-bart-logo" src="static/bart_logo.svg"/>
+        <img class="transport-type-icon" src="src/img/train.svg"/>
+        <img class="transport-type-bart-logo" src="src/img/bart_logo.svg"/>
         </div>
       </li>
     <ul>
@@ -304,9 +300,9 @@ const renderDataToDom = (sortedByAgencyAndStopsObj) => {
       <div class="agency-container df fdc">
         <li class="df fdr transport-type-container">
         <div class="m16">
-          <img class="transport-type-icon" src="static/front-bus.svg"/>
+          <img class="transport-type-icon" src="src/img/front-bus.svg"/>
 
-          <img class="transport-type-muni-logo" src="static/muni_logo.svg"/>
+          <img class="transport-type-muni-logo" src="src/img/muni_logo.svg"/>
           </div>
         </li>
       `
@@ -321,12 +317,10 @@ const renderDataToDom = (sortedByAgencyAndStopsObj) => {
       `
       <div class="agency-container df fdc">
         <li class="df fdr transport-type-container">
-          <img class="transport-type-icon" src="static/train.svg"/>
-          <img class="transport-type-bart-logo" src="static/bart_logo.svg"/>
+          <img class="transport-type-icon" src="src/img/train.svg"/>
+          <img class="transport-type-bart-logo" src="src/img/bart_logo.svg"/>
         </li>
       `
-    // <img class="transport-type-icon" src="static/bus.svg"/>
-    // renderStopsAndVisits(html, stops, "#bart-data")
   }
 }
 
@@ -410,16 +404,13 @@ const getStop =  (stop) => {
             </li>`
   }
 }
+
 const getAndRenderPhoto = async () => {
   // https://api.unsplash.com/
-
   const rawResponse = await fetch(
     `//api.unsplash.com/search/photos/?client_id=eeaf2366517e0de69aab6eb6e58b341633b96dedfb3c5bb24263163128953c83&page=1&query=sagrada-familia`
   )
-
   const jsonResponse = await rawResponse.json()
-  // console.log(jsonResponse)
-  // https://api.unsplash.com/search/photos?page=1&query=office
 }
 
 function reverseObject(object) {
